@@ -1,5 +1,6 @@
-package com.example.PaymentService.Model;
+package com.example.paymentService.Model;
 
+import com.example.paymentService.Enum.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ public class PaymentTransaction {
     private String transactionId;
     private double amount;
     private Instant expiresAt;
-    private boolean processed;
+    private TransactionStatus status;
 
     @CreatedDate
     private Instant createdAt;
@@ -32,4 +33,10 @@ public class PaymentTransaction {
     @LastModifiedDate
     private Instant updatedAt;
 
+    public PaymentTransaction( String transactionId, double amount, Instant expiresAt, TransactionStatus status) {
+        this.transactionId = transactionId;
+        this.amount = amount;
+        this.expiresAt = expiresAt;
+        this.status = status;
+    }
 }

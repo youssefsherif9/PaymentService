@@ -1,6 +1,6 @@
-package com.example.PaymentService.Repository;
+package com.example.paymentService.Repository;
 
-import com.example.PaymentService.Model.PaymentTransaction;
+import com.example.paymentService.Model.PaymentTransaction;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
