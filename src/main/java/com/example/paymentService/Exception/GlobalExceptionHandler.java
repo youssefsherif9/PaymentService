@@ -1,5 +1,5 @@
-package com.example.paymentService.Exception;
-import com.example.paymentService.dto.ErrorResponseDto;
+package com.example.paymentservice.exception;
+import com.example.paymentservice.dto.ErrorResponseDto;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -27,7 +27,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         Map<String, String> validationErrors = new HashMap<>();
         List<ObjectError> validationErrorList = ex.getBindingResult().getAllErrors();
 
-        validationErrorList.forEach((error) -> {
+        validationErrorList.forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String validationMsg = error.getDefaultMessage();
             validationErrors.put(fieldName, validationMsg);

@@ -1,6 +1,6 @@
-package com.example.paymentService;
+package com.example.paymentservice;
 
-import com.example.paymentService.dto.PaymentAmountRequestDto;
+import com.example.paymentservice.dto.PaymentAmountRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

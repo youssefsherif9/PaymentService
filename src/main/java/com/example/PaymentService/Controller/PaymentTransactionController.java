@@ -1,8 +1,8 @@
-package com.example.paymentService.Controller;
+package com.example.paymentservice.controller;
 
-import com.example.paymentService.dto.PaymentAmountRequestDto;
-import com.example.paymentService.dto.PaymentAmountResponseDto;
-import com.example.paymentService.Service.PaymentTransactionService;
+import com.example.paymentservice.dto.PaymentAmountRequestDto;
+import com.example.paymentservice.dto.PaymentAmountResponseDto;
+import com.example.paymentservice.service.PaymentTransactionService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

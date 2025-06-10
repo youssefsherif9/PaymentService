@@ -1,4 +1,4 @@
-package com.example.paymentService.dto;
+package com.example.paymentservice.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

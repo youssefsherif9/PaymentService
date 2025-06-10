@@ -1,6 +1,6 @@
-package com.example.paymentService.Model;
+package com.example.paymentservice.model;
 
-import com.example.paymentService.Enum.TransactionStatus;
+import com.example.paymentservice.enums.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
