@@ -1,21 +1,17 @@
-package com.example.PaymentService.Dto;
+package com.example.paymentservice.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class PaymentAmountRequestDto {
 
+    @NotNull
+    @Positive
     private double amount;
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public PaymentAmountRequestDto() {
-    }
-
-    public PaymentAmountRequestDto(double amount) {
-        this.amount = amount;
-    }
 }
