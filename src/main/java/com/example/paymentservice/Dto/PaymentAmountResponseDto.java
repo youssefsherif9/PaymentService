@@ -1,4 +1,4 @@
-package com.example.payment.dto;
+package com.example.paymentservice.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

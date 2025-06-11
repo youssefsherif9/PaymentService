@@ -1,10 +1,9 @@
-package com.example.payment.controller;
+package com.example.paymentservice;
 
 
-import com.example.payment.enums.TransactionStatus;
-import com.example.payment.model.PaymentTransaction;
-import com.example.payment.repository.PaymentTransactionRepository;
-import org.junit.jupiter.api.BeforeAll;
+import com.example.paymentservice.enums.TransactionStatus;
+import com.example.paymentservice.model.PaymentTransaction;
+import com.example.paymentservice.repository.PaymentTransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -25,20 +24,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 //@ActiveProfiles // <--- matches application-test.properties
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class IntegrationTest {
+class PatchPaymentIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private PaymentTransactionRepository paymentTransactionRepository;
 
-    @BeforeAll
+    @BeforeEach
     void setUp() {
         // Create and save a mock transaction in embedded MongoDB
+        paymentTransactionRepository.deleteAll();
         PaymentTransaction transaction = new PaymentTransaction();
         transaction.setTransactionId("abc123");
         transaction.setAmount(100.0);
         transaction.setExpiresAt(Instant.parse("2025-12-01T00:00:00Z"));
-        transaction.setTransactionStatus(TransactionStatus.NEW);
+        transaction.setStatus(TransactionStatus.NEW);
         transaction.setCreatedAt(Instant.now());
         transaction.setUpdatedAt(Instant.now());
 

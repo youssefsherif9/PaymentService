@@ -1,8 +1,9 @@
-package com.example.payment.validations;
+package com.example.paymentservice.validations;
 
-import com.example.payment.enums.TransactionStatus;
-import com.example.payment.model.PaymentTransaction;
-import com.example.payment.exception.PaymentValidationException;
+
+import com.example.paymentservice.Exception.PaymentValidationException;
+import com.example.paymentservice.enums.TransactionStatus;
+import com.example.paymentservice.model.PaymentTransaction;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
@@ -15,9 +16,9 @@ public class PaymentTransactionValidation {
     }
 
     public static void checkExpiration(PaymentTransaction paymentTransaction, String transactionId) {
-        log.debug("expire at:"+paymentTransaction.getExpiresAt()+"  now:"+Instant.now());
+        log.debug("expire at:" + paymentTransaction.getExpiresAt() + "  now:" + Instant.now());
 
-        if (paymentTransaction.getExpiresAt().isBefore(Instant.now() )){
+        if (paymentTransaction.getExpiresAt().isBefore(Instant.now())) {
             log.error("Transaction Id: [{}] has expired ", transactionId);
             throw new PaymentValidationException("Transaction is expired");
         }
@@ -29,10 +30,11 @@ public class PaymentTransactionValidation {
             throw new PaymentValidationException("Transaction saved amount doesn't match request amount");
         }
     }
+
     public static void checkStatus(PaymentTransaction paymentTransaction, String transactionId) {
-        if (!paymentTransaction.getTransactionStatus().equals(TransactionStatus.NEW)) {
+        if (!paymentTransaction.getStatus().equals(TransactionStatus.NEW)) {
             log.error("Transaction Id: [{}] has already been processed ", transactionId);
-            throw new PaymentValidationException("Transaction id"+transactionId+"has already been processed");
+            throw new PaymentValidationException("Transaction id" + transactionId + "has already been processed");
         }
     }
 
