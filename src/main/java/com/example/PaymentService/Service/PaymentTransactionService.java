@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
@@ -28,7 +30,19 @@ public class PaymentTransactionService {
     private String expiryUnit;
 
     public synchronized PaymentAmountResponseDto generatePayment(PaymentAmountRequestDto request) {
-        String transactionId = "txn_" + Instant.now().toString() + "_" + UUID.randomUUID().toString().substring(0, 6);
+
+        Instant now = Instant.now();
+
+        // Format date as yyyyMMdd
+        String datePart = DateTimeFormatter.ofPattern("yyyyMMdd")
+                .withZone(ZoneId.systemDefault())
+                .format(now);
+
+        // Get nanoseconds
+        String nanoPart = String.valueOf(now.getNano());
+
+        String transactionId = "txn_" + datePart + "_" + nanoPart + "_" + UUID.randomUUID().toString().substring(0, 6);
+
         Instant expiresAt = Instant.now().plus(expiryDuration, ChronoUnit.valueOf(expiryUnit.toUpperCase()));
 
         PaymentTransaction transaction = new PaymentTransaction(transactionId,request.getAmount(),expiresAt,NEW);
