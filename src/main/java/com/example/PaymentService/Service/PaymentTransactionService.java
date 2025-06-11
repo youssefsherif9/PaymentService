@@ -28,7 +28,7 @@ public class PaymentTransactionService {
     private String expiryUnit;
 
     public synchronized PaymentAmountResponseDto generatePayment(PaymentAmountRequestDto request) {
-        String transactionId = "txn_" + LocalDate.now() + "_" + UUID.randomUUID().toString().substring(0, 6);
+        String transactionId = "txn_" + Instant.now().toString() + "_" + UUID.randomUUID().toString().substring(0, 6);
         Instant expiresAt = Instant.now().plus(expiryDuration, ChronoUnit.valueOf(expiryUnit.toUpperCase()));
 
         PaymentTransaction transaction = new PaymentTransaction(transactionId,request.getAmount(),expiresAt,NEW);
