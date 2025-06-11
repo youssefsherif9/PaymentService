@@ -4,8 +4,8 @@ import com.example.paymentservice.dto.PaymentAmountRequestDto;
 import com.example.paymentservice.dto.PaymentAmountResponseDto;
 import com.example.paymentservice.service.PaymentTransactionService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/payment")
 @Slf4j
+@RequiredArgsConstructor
 public class PaymentTransactionController {
 
     private final PaymentTransactionService paymentTransactionService;
-
-    @Autowired
-    public PaymentTransactionController(PaymentTransactionService paymentTransactionService) {
-        this.paymentTransactionService = paymentTransactionService;
-    }
 
     @PostMapping("/generate-payment")
     public ResponseEntity<PaymentAmountResponseDto> generatePayment(@RequestBody @Valid PaymentAmountRequestDto paymentAmountRequestDto){

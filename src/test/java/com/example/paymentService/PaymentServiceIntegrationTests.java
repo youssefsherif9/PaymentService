@@ -2,8 +2,8 @@ package com.example.paymentservice;
 
 import com.example.paymentservice.dto.PaymentAmountRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -14,13 +14,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@RequiredArgsConstructor
  class PaymentServiceIntegrationTests {
 
-    @Autowired
-    private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final MockMvc mockMvc;
+
+
+    private final ObjectMapper objectMapper;
 
     @Test
     void generatePayment_ShouldReturn201AndValidResponse() throws Exception {
@@ -39,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     }
 
     @Test
-    void generatePayment_WithNegativeAmount_ShouldReturn400() throws Exception {
+    void generatePayment_WithNonPositiveAmount_ShouldReturn400() throws Exception {
         // Arrange
         PaymentAmountRequestDto requestDto = new PaymentAmountRequestDto();
         requestDto.setAmount(-10.0); // Invalid negative amount
