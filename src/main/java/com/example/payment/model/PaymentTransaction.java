@@ -1,5 +1,6 @@
-package com.example.PaymentService.Model;
+package com.example.payment.model;
 
+import com.example.payment.enums.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class PaymentTransaction {
     private double amount;
     private Instant expiresAt;
     private boolean processed;
+    private TransactionStatus transactionStatus;
 
     @CreatedDate
     private Instant createdAt;

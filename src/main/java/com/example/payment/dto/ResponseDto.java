@@ -1,4 +1,4 @@
-package com.example.PaymentService.Dto;
+package com.example.payment.dto;
 
 import org.springframework.http.HttpStatus;
 

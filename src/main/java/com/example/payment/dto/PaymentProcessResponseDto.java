@@ -1,15 +1,14 @@
-package com.example.PaymentService.Dto;
+package com.example.payment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class PaymentAmountResponseDto {
+public class PaymentProcessResponseDto {
+    private String status;
     private String transactionId;
-    private double amount;
-    private String expiresAt;
-
+    private String message;
 }
