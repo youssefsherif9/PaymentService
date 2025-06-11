@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PaymentTransactionRepository extends MongoRepository<PaymentTransaction,String> {
+public interface PaymentTransactionRepository extends MongoRepository<PaymentTransaction, String> {
     Optional<PaymentTransaction> findByTransactionId(String transactionId);
 }
