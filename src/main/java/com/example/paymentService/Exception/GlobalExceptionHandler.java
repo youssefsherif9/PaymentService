@@ -1,5 +1,6 @@
 package com.example.paymentservice.exception;
 import com.example.paymentservice.dto.ErrorResponseDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
@@ -33,6 +35,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             String validationMsg = error.getDefaultMessage();
             validationErrors.put(fieldName, validationMsg);
         });
+        log.error("Validation failed: {}", validationErrors);
         return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
     }
 
@@ -45,6 +48,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 exception.getMessage(),
                 LocalDateTime.now()
         );
+        log.error("Unhandled exception occurred at {}: {}", webRequest.getDescription(false), exception.getMessage(), exception);
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
