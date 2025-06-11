@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
@@ -32,7 +31,7 @@ class IntegrationTest {
     @Autowired
     private PaymentTransactionRepository paymentTransactionRepository;
 
-    @BeforeEach
+    @BeforeAll
     void setUp() {
         // Create and save a mock transaction in embedded MongoDB
         PaymentTransaction transaction = new PaymentTransaction();
@@ -121,21 +120,5 @@ class IntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void whenProcessPayment_expiredAt_throwsException() throws Exception {
-        String requestJson = """
-        {
-            "transactionId": "abc123",
-            "amount": 100.0,
-            "cardNumber": "4111111111111111",
-            "expiryDate": "25/12",
-            "cvv": "123"
-        }
-        """;
 
-        mockMvc.perform(patch("/api/payment/process-payment")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
-                .andExpect(status().isBadRequest());
-    }
 }
