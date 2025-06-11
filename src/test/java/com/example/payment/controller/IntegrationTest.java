@@ -21,10 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@AutoConfigureMockMvc
-//@ActiveProfiles("junit")
-//@SpringBootTest
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+
 @SpringBootTest
 @AutoConfigureMockMvc
 //@ActiveProfiles // <--- matches application-test.properties
@@ -50,13 +47,13 @@ class IntegrationTest {
     }
 
     @Test
-    void processPayment_succesfull() throws Exception {
+    void whenProcessPayment_thenReturnSuccess() throws Exception {
         String requestJson = """
         {
             "transactionId": "abc123",
             "amount": 100.0,
             "cardNumber": "4111111111111112",
-            "expiresAt": "2025-12-01T00:00:00Z",
+            "expiryDate": "2025-12-01T00:00:00Z",
             "cvv": "123"
         }
         """;
@@ -69,23 +66,76 @@ class IntegrationTest {
                 .andExpect(jsonPath("$.message").exists());
     }
 
-//    @Test
-//    void processPayment_failed() throws Exception {
-//        String requestJson = """
-//        {
-//            "transactionId": "abc123",
-//            "amount": 100.0,
-//            "cardNumber": "4111111111111111",
-//            "expiresAt": "2025-12-01T00:00:00Z",
-//            "cvv": "123"
-//        }
-//        """;
-//
-//        mockMvc.perform(patch("/api/payment/process-payment")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(requestJson))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.status").value("success"))
-//                .andExpect(jsonPath("$.message").exists());
-//    }
+    @Test
+    void whenProcessPayment_thenReturnFailed() throws Exception {
+        String requestJson = """
+        {
+            "transactionId": "abc123",
+            "amount": 100.0,
+            "cardNumber": "4111111111111111",
+            "expiryDate": "2025-12-01T00:00:00Z",
+            "cvv": "123"
+        }
+        """;
+
+        mockMvc.perform(patch("/api/payment/process-payment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("FAILED"))
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
+    void whenProcessPayment_throwsEntityNotFoundException() throws Exception {
+        String requestJson = """
+        {
+            "transactionId": "abc1234",
+            "amount": 100.0,
+            "cardNumber": "4111111111111111",
+            "expiryDate": "2025-06-11T16:56:00+02:00",
+            "cvv": "123"
+        }
+        """;
+
+        mockMvc.perform(patch("/api/payment/process-payment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void whenProcessPayment_missingCardNumber_throwsException() throws Exception {
+        String requestJson = """
+        {
+            "transactionId": "abc123",
+            "amount": 100.0,
+            "expiryDate": "2025-12-01T00:00:00Z",
+            "cvv": "123"
+        }
+        """;
+
+        mockMvc.perform(patch("/api/payment/process-payment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenProcessPayment_expiredAt_throwsException() throws Exception {
+        String requestJson = """
+        {
+            "transactionId": "abc123",
+            "amount": 100.0,
+            "cardNumber": "4111111111111111",
+            "expiryDate": "25/12",
+            "cvv": "123"
+        }
+        """;
+
+        mockMvc.perform(patch("/api/payment/process-payment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isBadRequest());
+    }
 }

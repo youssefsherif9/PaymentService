@@ -26,7 +26,7 @@ public class PaymentProcessRequestDto {
 
     @NotBlank(message = "Expiry date must not be empty")
     @NotNull(message = "Expiry date is required")
-    private String expiresAt;
+    private String expiryDate;
 
     @NotBlank(message = "CVV must not be empty")
     @NotNull(message = "CVV is required")
