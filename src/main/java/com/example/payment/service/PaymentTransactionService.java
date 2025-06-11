@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
+
 @Slf4j
 @Service
 public class PaymentTransactionService {
@@ -25,11 +26,11 @@ public class PaymentTransactionService {
 
     public PaymentProcessResponseDto processPayment(PaymentProcessRequestDto paymentRequest) {
         PaymentTransaction paymentTransaction = validateTransaction(paymentRequest.getTransactionId(), paymentRequest.getAmount());
-        return processTransaction(paymentTransaction, paymentRequest.getCardNumber());
+        return processTransaction(paymentTransaction, paymentRequest.getCardNumber().trim());
     }
 
     private PaymentProcessResponseDto processTransaction(PaymentTransaction paymentTransaction, String cardNumber) {
-       log.info("started processing transaction after passing validations");
+        log.info("started processing transaction after passing validations");
         char lastDigitChar = cardNumber.charAt(cardNumber.length() - 1);
         int lastDigit = Character.getNumericValue(lastDigitChar);
         PaymentProcessResponseDto response = new PaymentProcessResponseDto();
@@ -45,7 +46,7 @@ public class PaymentTransactionService {
             response.setMessage("Payment declined");
         }
         paymentTransactionRepository.save(paymentTransaction);
-        log.info("Finished payment process for transaction id: [{}]",paymentTransaction.getTransactionId());
+        log.info("Finished payment process for transaction id: [{}]", paymentTransaction.getTransactionId());
         return response;
     }
 
@@ -56,7 +57,7 @@ public class PaymentTransactionService {
         });
         PaymentTransactionValidation.checkExpiration(paymentTransaction, transactionId);
         PaymentTransactionValidation.verifyAmount(paymentTransaction, amount, transactionId);
-
+        PaymentTransactionValidation.checkStatus(paymentTransaction, transactionId);
         return paymentTransaction;
     }
 
