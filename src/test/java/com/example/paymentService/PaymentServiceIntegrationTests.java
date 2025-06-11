@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PaymentServiceIntegrationTests {
+ class PaymentServiceIntegrationTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -23,7 +23,7 @@ public class PaymentServiceIntegrationTests {
     private ObjectMapper objectMapper;
 
     @Test
-    public void generatePayment_ShouldReturn201AndValidResponse() throws Exception {
+    void generatePayment_ShouldReturn201AndValidResponse() throws Exception {
         // Arrange
         PaymentAmountRequestDto requestDto = new PaymentAmountRequestDto();
         requestDto.setAmount(99.99);
@@ -39,7 +39,7 @@ public class PaymentServiceIntegrationTests {
     }
 
     @Test
-    public void generatePayment_WithNegativeAmount_ShouldReturn400() throws Exception {
+    void generatePayment_WithNegativeAmount_ShouldReturn400() throws Exception {
         // Arrange
         PaymentAmountRequestDto requestDto = new PaymentAmountRequestDto();
         requestDto.setAmount(-10.0); // Invalid negative amount
