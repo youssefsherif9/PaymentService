@@ -41,7 +41,7 @@ public class PaymentTransactionService {
         // Get nanoseconds
         String nanoPart = String.valueOf(now.getNano());
 
-        String transactionId = "txn_" + datePart + "_" + nanoPart + "_" + UUID.randomUUID().toString().substring(0, 6);
+        String transactionId = "txn_" + nanoPart + datePart + "_" + UUID.randomUUID().toString().substring(0, 6);
 
         Instant expiresAt = Instant.now().plus(expiryDuration, ChronoUnit.valueOf(expiryUnit.toUpperCase()));
 
