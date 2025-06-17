@@ -1,10 +1,7 @@
 package com.example.paymentservice.Service;
 
 
-import com.example.paymentservice.Dto.PaymentAmountRequestDto;
-import com.example.paymentservice.Dto.PaymentAmountResponseDto;
-import com.example.paymentservice.Dto.PaymentProcessRequestDto;
-import com.example.paymentservice.Dto.PaymentProcessResponseDto;
+import com.example.paymentservice.Dto.*;
 import com.example.paymentservice.Exception.EntityNotFoundException;
 import com.example.paymentservice.enums.TransactionStatus;
 import com.example.paymentservice.model.PaymentTransaction;
@@ -29,7 +26,7 @@ import static com.example.paymentservice.enums.TransactionStatus.NEW;
 public class PaymentTransactionService {
 
     private final PaymentTransactionRepository paymentTransactionRepository;
-
+    private  final PaymentTransactionValidation paymentTransactionValidation;
     @Value("${payment.expiry.duration}")
     private long expiryDuration;
 
@@ -90,14 +87,34 @@ public class PaymentTransactionService {
     }
 
     public PaymentTransaction validateTransaction(String transactionId, double amount) {
-        PaymentTransaction paymentTransaction = paymentTransactionRepository.findByTransactionId(transactionId).orElseThrow(() -> {
+        PaymentTransaction paymentTransaction = fetchTransaction(transactionId);
+        paymentTransactionValidation.checkExpiration(paymentTransaction,transactionId);
+        paymentTransactionValidation.verifyAmount(paymentTransaction, amount, transactionId);
+        paymentTransactionValidation.checkStatus(paymentTransaction, transactionId);
+        return paymentTransaction;
+    }
+
+    private PaymentTransaction fetchTransaction(String transactionId){
+        return paymentTransactionRepository.findByTransactionId(transactionId).orElseThrow(() -> {
             log.error("Transaction Id [{}] not found ", transactionId);
             return new EntityNotFoundException("Transaction Id not found");
         });
-        PaymentTransactionValidation.checkExpiration(paymentTransaction, transactionId);
-        PaymentTransactionValidation.verifyAmount(paymentTransaction, amount, transactionId);
-        PaymentTransactionValidation.checkStatus(paymentTransaction, transactionId);
-        return paymentTransaction;
     }
+
+    public void updatePayment(UpdatePaymentRequestDto updatePaymentRequestDto) {
+        validateUpdateTransactionStatus(updatePaymentRequestDto.getStatus());
+        PaymentTransaction paymentTransaction = fetchTransaction(updatePaymentRequestDto.getTransactionId());
+        paymentTransactionValidation.checkStatus(paymentTransaction, updatePaymentRequestDto.getTransactionId());
+        paymentTransaction.setStatus(updatePaymentRequestDto.getStatus());
+        paymentTransactionRepository.save(paymentTransaction);
+        log.debug("updated payment transaction record with transactionID: {} to {}", updatePaymentRequestDto.getTransactionId(),updatePaymentRequestDto.getStatus());
+    }
+
+    private void validateUpdateTransactionStatus(TransactionStatus status) {
+        if (status != TransactionStatus.CANCELLED && status != TransactionStatus.TIMEOUT) {
+            throw new IllegalArgumentException("Invalid status for update: Status must be 'TIMEOUT' or 'CANCELLED'.");
+        }
+    }
+
 }
 
