@@ -35,5 +35,13 @@ public class PaymentTransactionController {
         log.info("Successfully generated transaction ID {} for amount {} ", paymentAmountResponseDto.getTransactionId(), paymentAmountResponseDto.getAmount());
         return ResponseEntity.status(HttpStatus.CREATED).body(paymentAmountResponseDto);
     }
+
+    @PatchMapping("/update-payment/{transactionId}")
+    public ResponseEntity<String> updatePayment(@PathVariable String transactionId) {
+        log.info("Started update payment process for transaction id: [{}]", transactionId);
+        paymentTransactionService.updatePayment(transactionId);
+        return ResponseEntity.ok("updated transaction status to failed");
+
+    }
 }
 

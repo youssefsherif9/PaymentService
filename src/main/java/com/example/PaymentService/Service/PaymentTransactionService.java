@@ -29,7 +29,7 @@ import static com.example.paymentservice.enums.TransactionStatus.NEW;
 public class PaymentTransactionService {
 
     private final PaymentTransactionRepository paymentTransactionRepository;
-
+    private  final PaymentTransactionValidation paymentTransactionValidation;
     @Value("${payment.expiry.duration}")
     private long expiryDuration;
 
@@ -90,14 +90,24 @@ public class PaymentTransactionService {
     }
 
     public PaymentTransaction validateTransaction(String transactionId, double amount) {
-        PaymentTransaction paymentTransaction = paymentTransactionRepository.findByTransactionId(transactionId).orElseThrow(() -> {
+        PaymentTransaction paymentTransaction = fetchTransaction(transactionId);
+        paymentTransactionValidation.checkExpiration(paymentTransaction,transactionId);
+        paymentTransactionValidation.verifyAmount(paymentTransaction, amount, transactionId);
+        paymentTransactionValidation.checkStatus(paymentTransaction, transactionId);
+        return paymentTransaction;
+    }
+
+    private PaymentTransaction fetchTransaction(String transactionId){
+        return paymentTransactionRepository.findByTransactionId(transactionId).orElseThrow(() -> {
             log.error("Transaction Id [{}] not found ", transactionId);
             return new EntityNotFoundException("Transaction Id not found");
         });
-        PaymentTransactionValidation.checkExpiration(paymentTransaction, transactionId);
-        PaymentTransactionValidation.verifyAmount(paymentTransaction, amount, transactionId);
-        PaymentTransactionValidation.checkStatus(paymentTransaction, transactionId);
-        return paymentTransaction;
+    }
+
+    public void updatePayment(String transactionId) {
+        PaymentTransaction paymentTransaction = fetchTransaction(transactionId);
+        paymentTransactionValidation.updateStatusToFailed(paymentTransaction);
+        log.debug("updated payment transaction record with transactionID: {} to Failed", transactionId);
     }
 }
 
