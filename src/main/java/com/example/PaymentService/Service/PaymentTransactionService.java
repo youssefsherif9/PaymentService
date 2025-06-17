@@ -1,10 +1,7 @@
 package com.example.paymentservice.Service;
 
 
-import com.example.paymentservice.Dto.PaymentAmountRequestDto;
-import com.example.paymentservice.Dto.PaymentAmountResponseDto;
-import com.example.paymentservice.Dto.PaymentProcessRequestDto;
-import com.example.paymentservice.Dto.PaymentProcessResponseDto;
+import com.example.paymentservice.Dto.*;
 import com.example.paymentservice.Exception.EntityNotFoundException;
 import com.example.paymentservice.enums.TransactionStatus;
 import com.example.paymentservice.model.PaymentTransaction;
@@ -104,10 +101,20 @@ public class PaymentTransactionService {
         });
     }
 
-    public void updatePayment(String transactionId) {
-        PaymentTransaction paymentTransaction = fetchTransaction(transactionId);
-        paymentTransactionValidation.updateStatusToFailed(paymentTransaction);
-        log.debug("updated payment transaction record with transactionID: {} to Failed", transactionId);
+    public void updatePayment(UpdatePaymentRequestDto updatePaymentRequestDto) {
+        validateUpdateTransactionStatus(updatePaymentRequestDto.getStatus());
+        PaymentTransaction paymentTransaction = fetchTransaction(updatePaymentRequestDto.getTransactionId());
+        paymentTransactionValidation.checkStatus(paymentTransaction, updatePaymentRequestDto.getTransactionId());
+        paymentTransaction.setStatus(updatePaymentRequestDto.getStatus());
+        paymentTransactionRepository.save(paymentTransaction);
+        log.debug("updated payment transaction record with transactionID: {} to {}", updatePaymentRequestDto.getTransactionId(),updatePaymentRequestDto.getStatus());
     }
+
+    private void validateUpdateTransactionStatus(TransactionStatus status) {
+        if (status != TransactionStatus.CANCELLED && status != TransactionStatus.TIMEOUT) {
+            throw new IllegalArgumentException("Invalid status for update: Status must be 'TIMEOUT' or 'CANCELLED'.");
+        }
+    }
+
 }
 

@@ -45,7 +45,7 @@ public class PaymentTransactionValidation {
         }
     }
 
-    public void updateStatusToFailed(PaymentTransaction paymentTransaction){
+    private void updateStatusToFailed(PaymentTransaction paymentTransaction){
         paymentTransaction.setStatus(TransactionStatus.FAILED);
         paymentTransactionRepository.save(paymentTransaction);
     }

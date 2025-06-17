@@ -20,4 +20,7 @@ public class UpdatePaymentRequestDto {
     private String transactionId;
 
 
+    @NotNull(message = "Status is required")
+    private TransactionStatus status;
+
 }

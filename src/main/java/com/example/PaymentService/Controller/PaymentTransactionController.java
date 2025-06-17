@@ -1,13 +1,11 @@
 package com.example.paymentservice.controller;
 
 
-import com.example.paymentservice.Dto.PaymentAmountRequestDto;
-import com.example.paymentservice.Dto.PaymentAmountResponseDto;
-import com.example.paymentservice.Dto.PaymentProcessRequestDto;
-import com.example.paymentservice.Dto.PaymentProcessResponseDto;
+import com.example.paymentservice.Dto.*;
 import com.example.paymentservice.Service.PaymentTransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,10 +34,10 @@ public class PaymentTransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(paymentAmountResponseDto);
     }
 
-    @PatchMapping("/update-payment/{transactionId}")
-    public ResponseEntity<String> updatePayment(@PathVariable String transactionId) {
-        log.info("Started update payment process for transaction id: [{}]", transactionId);
-        paymentTransactionService.updatePayment(transactionId);
+    @PatchMapping("/update-payment")
+    public ResponseEntity<String> updatePayment(@RequestBody @Valid UpdatePaymentRequestDto updatePaymentRequestDto) {
+        log.info("Started update payment process for transaction id: [{}]", updatePaymentRequestDto.getTransactionId());
+        paymentTransactionService.updatePayment(updatePaymentRequestDto);
         return ResponseEntity.ok("updated transaction status to failed");
 
     }
