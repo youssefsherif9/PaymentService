@@ -24,6 +24,8 @@ public class PaymentTransaction {
     private double amount;
     private Instant expiresAt;
     private TransactionStatus status;
+    private String cardNumber;
+    private String cardExpireDate;
 
     @CreatedDate
     private Instant createdAt;

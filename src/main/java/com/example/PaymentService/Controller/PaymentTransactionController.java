@@ -38,7 +38,7 @@ public class PaymentTransactionController {
     public ResponseEntity<String> updatePayment(@RequestBody @Valid UpdatePaymentRequestDto updatePaymentRequestDto) {
         log.info("Started update payment process for transaction id: [{}]", updatePaymentRequestDto.getTransactionId());
         paymentTransactionService.updatePayment(updatePaymentRequestDto);
-        return ResponseEntity.ok("updated transaction status to failed");
+        return ResponseEntity.ok("updated transaction status to "+ updatePaymentRequestDto.getStatus());
 
     }
 }

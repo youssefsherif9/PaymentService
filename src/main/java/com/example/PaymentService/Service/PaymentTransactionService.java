@@ -33,6 +33,9 @@ public class PaymentTransactionService {
     @Value("${payment.expiry.unit}")
     private String expiryUnit;
 
+    @Value("${card.mask}")
+    private String mask;
+
     public synchronized PaymentAmountResponseDto generatePayment(PaymentAmountRequestDto request) {
 
         Instant now = Instant.now();
@@ -61,8 +64,12 @@ public class PaymentTransactionService {
     }
 
     public PaymentProcessResponseDto processPayment(PaymentProcessRequestDto paymentRequest) {
-        PaymentTransaction paymentTransaction = validateTransaction(paymentRequest.getTransactionId(), paymentRequest.getAmount());
-        return processTransaction(paymentTransaction, paymentRequest.getCardNumber().trim());
+        PaymentTransaction paymentTransaction = fetchTransaction(paymentRequest.getTransactionId());
+        //mask card number
+        paymentTransaction.setCardNumber(maskCardNumber(paymentRequest.getCardNumber()));
+        paymentTransaction.setCardExpireDate(paymentRequest.getExpiryDate());
+        PaymentTransaction transaction = validateTransaction(paymentTransaction);
+        return processTransaction(transaction, paymentRequest.getCardNumber().trim());
     }
 
     private PaymentProcessResponseDto processTransaction(PaymentTransaction paymentTransaction, String cardNumber) {
@@ -86,11 +93,10 @@ public class PaymentTransactionService {
         return response;
     }
 
-    public PaymentTransaction validateTransaction(String transactionId, double amount) {
-        PaymentTransaction paymentTransaction = fetchTransaction(transactionId);
-        paymentTransactionValidation.checkExpiration(paymentTransaction,transactionId);
-        paymentTransactionValidation.verifyAmount(paymentTransaction, amount, transactionId);
-        paymentTransactionValidation.checkStatus(paymentTransaction, transactionId);
+    public PaymentTransaction validateTransaction(PaymentTransaction paymentTransaction) {
+        paymentTransactionValidation.checkExpiration(paymentTransaction,paymentTransaction.getTransactionId());
+        paymentTransactionValidation.verifyAmount(paymentTransaction, paymentTransaction.getAmount(), paymentTransaction.getTransactionId());
+        paymentTransactionValidation.checkStatus(paymentTransaction, paymentTransaction.getTransactionId());
         return paymentTransaction;
     }
 
@@ -116,5 +122,9 @@ public class PaymentTransactionService {
         }
     }
 
+    private String maskCardNumber(String cardNumber){
+        mask=mask+" "+cardNumber.substring(cardNumber.length() - 4);
+        return mask;
+    }
 }
 
