@@ -123,8 +123,7 @@ public class PaymentTransactionService {
     }
 
     private String maskCardNumber(String cardNumber){
-        mask=mask+" "+cardNumber.substring(cardNumber.length() - 4);
-        return mask;
+        return mask+" "+cardNumber.substring(cardNumber.length() - 4);
     }
 }
 
