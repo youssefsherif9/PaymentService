@@ -39,7 +39,6 @@ public class PaymentTransactionValidation {
 
     public void checkStatus(PaymentTransaction paymentTransaction, String transactionId) {
         if (!paymentTransaction.getStatus().equals(TransactionStatus.NEW)) {
-            updateStatusToFailed(paymentTransaction);
             log.error("Transaction Id: [{}] has already been processed ", transactionId);
             throw new PaymentValidationException("Transaction id" + transactionId + "has already been processed");
         }
